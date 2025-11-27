@@ -20,13 +20,22 @@ export const AllItemsView: React.FC<AllItemsViewProps> = ({ subscriptions, onEdi
 
         if (!matchesSearch) return false;
 
-        const subDate = parseISO(sub.createdAt);
         const today = new Date();
 
         if (filter === 'today') {
-            return subDate.getDate() === today.getDate();
+            return sub.paymentDay === today.getDate();
         } else if (filter === 'week') {
-            return isSameWeek(subDate, today);
+            // Check if paymentDay falls within this week
+            let isInWeek = false;
+            for (let i = 0; i < 7; i++) {
+                const weekDate = new Date(today);
+                weekDate.setDate(today.getDate() - today.getDay() + i);
+                if (sub.paymentDay === weekDate.getDate()) {
+                    isInWeek = true;
+                    break;
+                }
+            }
+            return isInWeek;
         }
 
         return true;

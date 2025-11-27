@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { Navigation } from './components/Navigation';
 import { DashboardView } from './views/DashboardView';
@@ -17,14 +17,20 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
 
+  // Migration: Ensure all subscriptions have a paymentDay
+  useEffect(() => {
+    const migrated = subscriptions.map(sub => ({
+      ...sub,
+      paymentDay: sub.paymentDay || 1
+    }));
+    // Only update if changes are needed to avoid infinite loop
+    if (JSON.stringify(migrated) !== JSON.stringify(subscriptions)) {
+      setSubscriptions(migrated);
+    }
+  }, [subscriptions, setSubscriptions]);
+
   const totalMonthlyCost = useMemo(() => {
-    return subscriptions.reduce((total, sub) => {
-      if (sub.cycle === 'Monthly') {
-        return total + Number(sub.amount);
-      } else {
-        return total + (Number(sub.amount) / 12);
-      }
-    }, 0);
+    return subscriptions.reduce((total, sub) => total + Number(sub.amount), 0);
   }, [subscriptions]);
 
   const handleAddSubscription = (data: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt'>) => {

@@ -15,7 +15,7 @@ interface AddSubscriptionModalProps {
 interface FormData {
     itemName: string;
     amount: number;
-    cycle: 'Monthly' | 'Yearly';
+    paymentDay: number;
     category: 'subscription' | 'fixed';
 }
 
@@ -29,7 +29,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
         defaultValues: {
             itemName: '',
             amount: 0,
-            cycle: 'Monthly',
+            paymentDay: new Date().getDate(), // Default to today
             category: 'subscription'
         }
     });
@@ -38,13 +38,13 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
         if (editingSubscription) {
             setValue('itemName', editingSubscription.itemName);
             setValue('amount', editingSubscription.amount);
-            setValue('cycle', editingSubscription.cycle);
+            setValue('paymentDay', editingSubscription.paymentDay || new Date().getDate());
             setValue('category', editingSubscription.category || 'subscription');
         } else {
             reset({
                 itemName: '',
                 amount: undefined,
-                cycle: 'Monthly',
+                paymentDay: new Date().getDate(),
                 category: 'subscription'
             });
         }
@@ -143,14 +143,26 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-textSecondary mb-1">Cycle</label>
-                                        <select
-                                            {...register('cycle')}
-                                            className="w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all appearance-none"
-                                        >
-                                            <option value="Monthly">Monthly</option>
-                                            <option value="Yearly">Yearly</option>
-                                        </select>
+                                        <label className="block text-sm font-medium text-textSecondary mb-1">Payment Day</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max="31"
+                                                {...register('paymentDay', {
+                                                    required: 'Required',
+                                                    min: { value: 1, message: '1-31' },
+                                                    max: { value: 31, message: '1-31' },
+                                                    valueAsNumber: true
+                                                })}
+                                                className={cn(
+                                                    "w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all",
+                                                    errors.paymentDay && "border-danger focus:ring-danger-50"
+                                                )}
+                                            />
+                                            <span className="absolute right-4 top-3 text-textSecondary text-sm">of month</span>
+                                        </div>
+                                        {errors.paymentDay && <p className="text-danger text-xs mt-1">{errors.paymentDay.message}</p>}
                                     </div>
                                 </div>
 

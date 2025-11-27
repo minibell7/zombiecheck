@@ -17,16 +17,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions, onEdi
 
     const selectedSubscriptions = subscriptions.filter(sub => {
         if (!selectedDate) return false;
-        const subDate = parseISO(sub.createdAt);
-        // Simplified: matching day of month for monthly subs
-        if (sub.cycle === 'Monthly') {
-            return subDate.getDate() === selectedDate.getDate();
-        }
-        return isSameDay(subDate, selectedDate);
+        return sub.paymentDay === selectedDate.getDate();
     });
 
     // Modifiers to highlight days with subscriptions
-    const daysWithSubs = subscriptions.map(sub => parseISO(sub.createdAt));
+    // Since it's monthly, we check if the day matches any subscription's paymentDay
+    const hasSub = (date: Date) => {
+        return subscriptions.some(sub => sub.paymentDay === date.getDate());
+    };
 
     return (
         <div className="pb-24 px-6 pt-6">
@@ -48,7 +46,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ subscriptions, onEdi
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
-                    modifiers={{ hasSub: daysWithSubs }}
+                    modifiers={{ hasSub }}
                     modifiersStyles={{
                         hasSub: { fontWeight: 'bold', textDecoration: 'underline', textDecorationColor: '#14b8a6' }
                     }}

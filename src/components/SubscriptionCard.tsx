@@ -25,7 +25,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ subscription
                     </span>
                     <div className="flex items-center gap-1 text-xs text-textSecondary bg-white-5 px-2 py-0.5 rounded-full">
                         <Calendar size={10} />
-                        <span>{subscription.cycle}</span>
+                        <span>Day {subscription.paymentDay}</span>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-textSecondary bg-white-5 px-2 py-0.5 rounded-full">
                         {subscription.category === 'fixed' ? <Shield size={10} /> : <PlayCircle size={10} />}

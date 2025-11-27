@@ -16,8 +16,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
 
     const todayCost = subscriptions.reduce((total, sub) => {
         const today = new Date();
-        const subDate = parseISO(sub.createdAt);
-        if (subDate.getDate() === today.getDate()) {
+        if (sub.paymentDay === today.getDate()) {
             return total + Number(sub.amount);
         }
         return total;
@@ -25,8 +24,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
 
     const weekCost = subscriptions.reduce((total, sub) => {
         const today = new Date();
-        const subDate = parseISO(sub.createdAt);
-        if (isSameWeek(subDate, today)) {
+        const currentDay = today.getDay(); // 0 (Sun) - 6 (Sat)
+        const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1); // Adjust to Monday start
+
+        // Check next 7 days from Monday (or just check if paymentDay is in this week's dates)
+        // Simpler: iterate through the 7 days of this week
+        let isInWeek = false;
+        for (let i = 0; i < 7; i++) {
+            const weekDate = new Date(today);
+            weekDate.setDate(today.getDate() - today.getDay() + i); // Sunday to Saturday
+            if (sub.paymentDay === weekDate.getDate()) {
+                isInWeek = true;
+                break;
+            }
+        }
+
+        if (isInWeek) {
             return total + Number(sub.amount);
         }
         return total;
