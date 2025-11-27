@@ -94,7 +94,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                 {...register('category')}
                                                 className="sr-only peer"
                                             />
-                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white transition-all">
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white peer-checked:font-bold transition-all">
                                                 Subscription
                                             </div>
                                         </label>
@@ -105,7 +105,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                 {...register('category')}
                                                 className="sr-only peer"
                                             />
-                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white transition-all">
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white peer-checked:font-bold transition-all">
                                                 Fixed Expense
                                             </div>
                                         </label>
