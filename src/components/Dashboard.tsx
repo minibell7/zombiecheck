@@ -3,11 +3,15 @@ import { TrendingUp } from 'lucide-react';
 
 interface DashboardProps {
     totalMonthlyCost: number;
+    onClick?: () => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ totalMonthlyCost }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ totalMonthlyCost, onClick }) => {
     return (
-        <div className="p-6 pt-12 pb-8 bg-gradient-to-br from-surfaceHighlight to-surface rounded-b-3xl shadow-lg mb-6 border-b border-border/30">
+        <div
+            onClick={onClick}
+            className={`p-6 pt-12 pb-8 bg-gradient-to-br from-surfaceHighlight to-surface rounded-b-3xl shadow-lg mb-6 border-b border-border-30 ${onClick ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}
+        >
             <div className="flex items-center gap-2 mb-2 text-accent">
                 <TrendingUp size={20} />
                 <span className="text-sm font-semibold tracking-wider uppercase">Total Monthly Cost</span>

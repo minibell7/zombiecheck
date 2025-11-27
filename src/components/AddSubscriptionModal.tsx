@@ -16,6 +16,7 @@ interface FormData {
     itemName: string;
     amount: number;
     cycle: 'Monthly' | 'Yearly';
+    category: 'subscription' | 'fixed';
 }
 
 export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
@@ -28,7 +29,8 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
         defaultValues: {
             itemName: '',
             amount: 0,
-            cycle: 'Monthly'
+            cycle: 'Monthly',
+            category: 'subscription'
         }
     });
 
@@ -37,11 +39,13 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             setValue('itemName', editingSubscription.itemName);
             setValue('amount', editingSubscription.amount);
             setValue('cycle', editingSubscription.cycle);
+            setValue('category', editingSubscription.category || 'subscription');
         } else {
             reset({
                 itemName: '',
                 amount: undefined,
-                cycle: 'Monthly'
+                cycle: 'Monthly',
+                category: 'subscription'
             });
         }
     }, [editingSubscription, setValue, reset, isOpen]);
@@ -60,7 +64,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+                        className="fixed inset-0 bg-black-60 backdrop-blur-sm z-40"
                     />
                     <motion.div
                         initial={{ y: '100%' }}
@@ -74,20 +78,48 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                 <h2 className="text-xl font-bold text-white">
                                     {editingSubscription ? 'Edit Subscription' : 'New Subscription'}
                                 </h2>
-                                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                                <button onClick={onClose} className="p-2 hover:bg-white-10 rounded-full transition-colors">
                                     <X size={20} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                                 <div>
+                                    <label className="block text-sm font-medium text-textSecondary mb-2">Category</label>
+                                    <div className="grid grid-cols-2 gap-2 bg-surfaceHighlight p-1 rounded-xl border border-border">
+                                        <label className="cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="subscription"
+                                                {...register('category')}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white transition-all">
+                                                Subscription
+                                            </div>
+                                        </label>
+                                        <label className="cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                value="fixed"
+                                                {...register('category')}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white transition-all">
+                                                Fixed Expense
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
                                     <label className="block text-sm font-medium text-textSecondary mb-1">Name</label>
                                     <input
                                         {...register('itemName', { required: 'Name is required' })}
                                         placeholder="Netflix, Spotify, etc."
                                         className={cn(
-                                            "w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all",
-                                            errors.itemName && "border-danger focus:ring-danger/50"
+                                            "w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all",
+                                            errors.itemName && "border-danger focus:ring-danger-50"
                                         )}
                                     />
                                     {errors.itemName && <p className="text-danger text-xs mt-1">{errors.itemName.message}</p>}
@@ -101,10 +133,10 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                             <input
                                                 type="number"
                                                 step="0.01"
-                                                {...register('amount', { required: 'Required', min: 0 })}
+                                                {...register('amount', { required: 'Required', min: 0, valueAsNumber: true })}
                                                 className={cn(
-                                                    "w-full bg-surfaceHighlight border border-border rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all",
-                                                    errors.amount && "border-danger focus:ring-danger/50"
+                                                    "w-full bg-surfaceHighlight border border-border rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all",
+                                                    errors.amount && "border-danger focus:ring-danger-50"
                                                 )}
                                             />
                                         </div>
@@ -114,7 +146,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                         <label className="block text-sm font-medium text-textSecondary mb-1">Cycle</label>
                                         <select
                                             {...register('cycle')}
-                                            className="w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all appearance-none"
+                                            className="w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all appearance-none"
                                         >
                                             <option value="Monthly">Monthly</option>
                                             <option value="Yearly">Yearly</option>
@@ -124,7 +156,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
 
                                 <button
                                     type="submit"
-                                    className="w-full bg-accent hover:bg-accentHover text-white font-bold py-4 rounded-xl mt-4 transition-colors shadow-lg shadow-accent/20"
+                                    className="w-full bg-accent hover:bg-accentHover text-white font-bold py-4 rounded-xl mt-4 transition-colors shadow-lg shadow-accent-20"
                                 >
                                     {editingSubscription ? 'Update Subscription' : 'Add Subscription'}
                                 </button>

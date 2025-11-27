@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --color-background: #09090b;
+  --color-background: #000000;
   --color-surface: #18181b;
   --color-surface-highlight: #27272a;
   --color-border: #3f3f46;
@@ -466,6 +466,59 @@ body {
 
 .focus\:ring-danger\/50:focus {
   box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px rgba(239, 68, 68, 0.5);
+}
+
+/* Opacity Utilities */
+.bg-surfaceHighlight-50 {
+  background-color: rgba(39, 39, 42, 0.5);
+}
+
+.bg-black-60 {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.bg-white-5 {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bg-white-10 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-danger-10 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.border-white-5 {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.border-border-30 {
+  border-color: rgba(63, 63, 70, 0.3);
+}
+
+.shadow-accent-20 {
+  box-shadow: 0 10px 15px -3px rgba(20, 184, 166, 0.2);
+}
+
+.shadow-accent-30 {
+  box-shadow: 0 10px 15px -3px rgba(20, 184, 166, 0.3);
+}
+
+.focus\:ring-accent-50:focus {
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px rgba(20, 184, 166, 0.5);
+}
+
+.focus\:ring-danger-50:focus {
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px rgba(239, 68, 68, 0.5);
+}
+
+.hover\:bg-white-10:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.hover\:bg-danger-10:hover {
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Scrollbar */

@@ -3,6 +3,7 @@ export interface Subscription {
     itemName: string;
     amount: number;
     cycle: 'Monthly' | 'Yearly';
+    category: 'subscription' | 'fixed';
     createdAt: string; // ISO string
     updatedAt: string; // ISO string
 }
