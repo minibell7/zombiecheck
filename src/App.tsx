@@ -79,7 +79,7 @@ function App() {
         onAddClick={() => setIsModalOpen(true)}
       />
 
-      <div className="min-h-screen bg-surface pt-0 md:pt-20 pb-24 md:pb-10 px-4 md:px-8 transition-all">
+      <div className="min-h-screen bg-surface pt-0 lg:pt-20 pb-24 lg:pb-10 px-4 lg:px-8 transition-all">
         {activeTab === 'dashboard' && (
           <DashboardView
             subscriptions={subscriptions}
@@ -106,17 +106,15 @@ function App() {
         )}
       </div>
 
-      <div className="md:hidden fixed bottom-20 left-0 right-0 pointer-events-none z-40 px-6">
-        <div className="absolute right-6 w-14 h-14 pointer-events-auto group">
-          <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-30 animate-ping duration-1000"></span>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="relative w-14 h-14 bg-accent hover:bg-accentHover text-white rounded-full flex items-center justify-center shadow-lg shadow-accent-30 transition-transform hover:scale-105 active:scale-95"
-            aria-label="Add Subscription"
-          >
-            <Plus size={28} />
-          </button>
-        </div>
+      <div className="lg:hidden fixed bottom-24 right-6 z-40">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-accent hover:bg-accentHover text-white px-5 py-3 rounded-full font-bold shadow-lg shadow-accent-30 flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
+          aria-label="Add Subscription"
+        >
+          <Plus size={20} />
+          Add Item
+        </button>
       </div>
 
       <AddSubscriptionModal

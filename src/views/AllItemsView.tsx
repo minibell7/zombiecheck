@@ -59,7 +59,7 @@ export const AllItemsView: React.FC<AllItemsViewProps> = ({ subscriptions, onEdi
                 />
             </div>
 
-            <div className="space-y-1 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+            <div className="space-y-1 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-4">
                 <AnimatePresence>
                     {filteredSubscriptions.length === 0 ? (
                         <div className="text-center py-12 text-textSecondary opacity-50">

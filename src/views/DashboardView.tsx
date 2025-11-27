@@ -70,7 +70,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
 
             <Dashboard totalMonthlyCost={totalMonthlyCost} onClick={() => onNavigate('all')} />
 
-            <div className="px-6 grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 max-w-7xl mx-auto">
+            <div className="px-6 grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 max-w-7xl mx-auto">
                 <div
                     onClick={() => onNavigate('today')}
                     className="bg-accent rounded-2xl p-4 text-white shadow-lg shadow-accent-20 cursor-pointer hover:opacity-90 transition-opacity"

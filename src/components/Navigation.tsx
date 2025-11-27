@@ -12,7 +12,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, 
     return (
         <>
             {/* Top Navigation (Desktop) */}
-            <div className="hidden md:flex fixed top-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-b border-white-5 z-50 px-6 py-4 items-center justify-between max-w-7xl mx-auto">
+            <div className="hidden lg:flex fixed top-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-b border-white-5 z-50 px-6 py-4 items-center justify-between max-w-7xl mx-auto">
                 <h1 className="text-xl font-bold text-white tracking-tight">Zombiecheck</h1>
 
                 <div className="absolute left-1/2 -translate-x-1/2 flex gap-2">
@@ -58,7 +58,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, 
             </div>
 
             {/* Bottom Navigation (Mobile) */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border-30 pb-safe pt-2 px-6 flex justify-around items-center z-50">
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border-30 pb-safe pt-2 px-6 flex justify-around items-center z-50">
                 <button
                     onClick={() => onTabChange('dashboard')}
                     className={cn(
