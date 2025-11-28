@@ -94,7 +94,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                 {...register('category')}
                                                 className="sr-only peer"
                                             />
-                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white peer-checked:font-bold transition-all">
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-gray-900 peer-checked:font-bold transition-all">
                                                 Subscription
                                             </div>
                                         </label>
@@ -105,7 +105,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                 {...register('category')}
                                                 className="sr-only peer"
                                             />
-                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-white peer-checked:font-bold transition-all">
+                                            <div className="text-center py-2 rounded-lg text-sm font-medium text-textSecondary peer-checked:bg-accent peer-checked:text-gray-900 peer-checked:font-bold transition-all">
                                                 Fixed Expense
                                             </div>
                                         </label>
@@ -134,6 +134,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                 type="number"
                                                 step="0.01"
                                                 {...register('amount', { required: 'Required', min: 0, valueAsNumber: true })}
+                                                onFocus={(e) => e.target.select()}
                                                 className={cn(
                                                     "w-full bg-surfaceHighlight border border-border rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all",
                                                     errors.amount && "border-danger focus:ring-danger-50"
@@ -155,6 +156,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                                     max: { value: 31, message: '1-31' },
                                                     valueAsNumber: true
                                                 })}
+                                                onFocus={(e) => e.target.select()}
                                                 className={cn(
                                                     "w-full bg-surfaceHighlight border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent-50 transition-all",
                                                     errors.paymentDay && "border-danger focus:ring-danger-50"
