@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Dashboard } from '../components/Dashboard';
 import type { Subscription } from '../types';
 import { ChevronDown, ChevronUp, Lightbulb, Share2 } from 'lucide-react';
-import { isSameWeek, parseISO } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DashboardViewProps {
@@ -24,9 +23,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
 
     const weekCost = subscriptions.reduce((total, sub) => {
         const today = new Date();
-        const currentDay = today.getDay(); // 0 (Sun) - 6 (Sat)
-        const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1); // Adjust to Monday start
-
         // Check next 7 days from Monday (or just check if paymentDay is in this week's dates)
         // Simpler: iterate through the 7 days of this week
         let isInWeek = false;

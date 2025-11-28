@@ -3,7 +3,6 @@ import type { Subscription } from '../types';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 import { Search } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { isSameWeek, parseISO } from 'date-fns';
 
 interface AllItemsViewProps {
     subscriptions: Subscription[];

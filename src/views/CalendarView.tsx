@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import type { Subscription } from '../types';
 import { SubscriptionCard } from '../components/SubscriptionCard';
-import { parseISO, isSameDay } from 'date-fns';
 import 'react-day-picker/dist/style.css';
 import { AnimatePresence } from 'framer-motion';
 
