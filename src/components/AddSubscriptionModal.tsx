@@ -1,9 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { Subscription } from '../types';
-import { X } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
+import { DayPicker } from 'react-day-picker';
+import { enUS } from 'date-fns/locale';
+import { format, parseISO } from 'date-fns';
+import 'react-day-picker/dist/style.css';
 
 interface AddSubscriptionModalProps {
     isOpen: boolean;
@@ -39,6 +43,7 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     });
 
     const isFreeTrial = watch('isFreeTrial');
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
 
 
@@ -205,14 +210,60 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                             >
                                                 <div className="pt-2">
                                                     <label className="block text-sm font-medium text-warning mb-1">Trial End Date</label>
-                                                    <input
-                                                        type="date"
-                                                        {...register('trialEndDate', { required: isFreeTrial ? 'Trial end date is required' : false })}
-                                                        className={cn(
-                                                            "w-full bg-surface border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warning transition-all",
-                                                            errors.trialEndDate && "border-danger focus:ring-danger-50"
-                                                        )}
-                                                    />
+                                                    <div className="relative">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                                                            className={cn(
+                                                                "w-full bg-surface border border-border rounded-xl px-4 py-3 text-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-warning transition-all",
+                                                                errors.trialEndDate && "border-danger focus:ring-danger-50"
+                                                            )}
+                                                        >
+                                                            <span className={!watch('trialEndDate') ? "text-textSecondary" : ""}>
+                                                                {watch('trialEndDate') ? format(parseISO(watch('trialEndDate')), 'PPP', { locale: enUS }) : "Select date"}
+                                                            </span>
+                                                            <Calendar size={18} className="text-textSecondary" />
+                                                        </button>
+
+                                                        <AnimatePresence>
+                                                            {isCalendarOpen && (
+                                                                <>
+                                                                    <div
+                                                                        className="fixed inset-0 z-10"
+                                                                        onClick={() => setIsCalendarOpen(false)}
+                                                                    />
+                                                                    <motion.div
+                                                                        initial={{ opacity: 0, y: 10 }}
+                                                                        animate={{ opacity: 1, y: 0 }}
+                                                                        exit={{ opacity: 0, y: 10 }}
+                                                                        className="absolute bottom-full left-0 mb-2 bg-surfaceHighlight border border-border rounded-xl shadow-xl z-20 p-2"
+                                                                    >
+                                                                        <DayPicker
+                                                                            mode="single"
+                                                                            selected={watch('trialEndDate') ? parseISO(watch('trialEndDate')) : undefined}
+                                                                            onSelect={(date) => {
+                                                                                if (date) {
+                                                                                    setValue('trialEndDate', format(date, 'yyyy-MM-dd'));
+                                                                                    setIsCalendarOpen(false);
+                                                                                }
+                                                                            }}
+                                                                            locale={enUS}
+                                                                            modifiersClassNames={{
+                                                                                selected: "bg-accent text-white hover:bg-accentHover",
+                                                                                today: "text-accent font-bold"
+                                                                            }}
+                                                                            styles={{
+                                                                                caption: { color: 'white' },
+                                                                                head_cell: { color: '#9ca3af' },
+                                                                                day: { color: 'white', borderRadius: '0.5rem' },
+                                                                                nav_button: { color: 'white' }
+                                                                            }}
+                                                                        />
+                                                                    </motion.div>
+                                                                </>
+                                                            )}
+                                                        </AnimatePresence>
+                                                    </div>
                                                     {errors.trialEndDate && <p className="text-danger text-xs mt-1">{errors.trialEndDate.message}</p>}
                                                 </div>
                                             </motion.div>

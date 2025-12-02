@@ -78,6 +78,46 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ subscription
             </div>
 
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
+                {/* Add to Calendar Button for Free Trials */}
+                {subscription.isFreeTrial && subscription.trialEndDate && !isKillList && (
+                    <button
+                        onClick={() => {
+                            const endDate = parseISO(subscription.trialEndDate!);
+                            const reminderDate = new Date(endDate);
+                            reminderDate.setDate(endDate.getDate() - 1); // Remind 1 day before
+
+                            const title = `Cancel ${subscription.itemName}`;
+                            const description = `Your free trial for ${subscription.itemName} ends on ${subscription.trialEndDate}. Cancel now to avoid charges!`;
+
+                            // Create .ics content
+                            const icsContent = [
+                                'BEGIN:VCALENDAR',
+                                'VERSION:2.0',
+                                'BEGIN:VEVENT',
+                                `DTSTART;VALUE=DATE:${reminderDate.toISOString().split('T')[0].replace(/-/g, '')}`,
+                                `DTEND;VALUE=DATE:${reminderDate.toISOString().split('T')[0].replace(/-/g, '')}`,
+                                `SUMMARY:${title}`,
+                                `DESCRIPTION:${description}`,
+                                'END:VEVENT',
+                                'END:VCALENDAR'
+                            ].join('\n');
+
+                            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.setAttribute('download', `cancel-${subscription.itemName.toLowerCase()}.ics`);
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }}
+                        className="p-2 rounded-full hover:bg-accent/20 text-textSecondary hover:text-accent transition-colors"
+                        title="Add to Calendar"
+                    >
+                        <Calendar size={16} />
+                    </button>
+                )}
+
                 {onStatusChange && !isKillList && (
                     <button
                         onClick={() => onStatusChange(subscription.id, 'to_cancel')}

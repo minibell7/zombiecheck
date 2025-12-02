@@ -95,6 +95,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </button>
             </div>
 
+            {/* Critical Alert Banner */}
+            <AnimatePresence>
+                {trialEndingSoon.length > 0 && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="px-6 mb-4"
+                    >
+                        <div className="bg-warning/10 border border-warning/50 rounded-xl p-4 flex items-start gap-3 shadow-lg shadow-warning/5">
+                            <div className="p-2 bg-warning/20 rounded-full text-warning shrink-0">
+                                <AlertTriangle size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-warning font-bold text-lg">Critical Alert</h3>
+                                <p className="text-textSecondary text-sm leading-relaxed">
+                                    You have <span className="text-white font-bold">{trialEndingSoon.length} free trial(s)</span> ending soon!
+                                    Cancel them now to avoid unwanted charges.
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <Dashboard totalMonthlyCost={totalMonthlyCost} onClick={() => onNavigate('all')} />
 
             {/* Trial Alerts */}
