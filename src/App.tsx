@@ -5,16 +5,21 @@ import { DashboardView } from './views/DashboardView';
 import { CalendarView } from './views/CalendarView';
 import { AllItemsView } from './views/AllItemsView';
 import { AddSubscriptionModal } from './components/AddSubscriptionModal';
+import { WelcomeModal } from './components/WelcomeModal';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import type { Subscription } from './types';
 import { Plus } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
+import { SettingsModal } from './components/SettingsModal';
+
 function App() {
   const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>('subscriptions', []);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useLocalStorage<boolean>('hasSeenOnboarding', false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'items'>('dashboard');
   const [itemsFilter, setItemsFilter] = useState<'all' | 'today' | 'week'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
 
   // Migration: Ensure all subscriptions have a paymentDay
@@ -83,6 +88,7 @@ function App() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onAddClick={() => setIsModalOpen(true)}
+        onSettingsClick={() => setIsSettingsOpen(true)}
       />
 
       <div className="min-h-screen bg-surface pt-0 lg:pt-20 pb-24 lg:pb-10 px-4 lg:px-8 transition-all">
@@ -128,6 +134,18 @@ function App() {
         onClose={handleCloseModal}
         onSave={handleAddSubscription}
         editingSubscription={editingSubscription}
+      />
+
+      <WelcomeModal
+        isOpen={!hasSeenOnboarding}
+        onClose={() => setHasSeenOnboarding(true)}
+      />
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        subscriptions={subscriptions}
+        setSubscriptions={setSubscriptions}
       />
     </Layout>
   );
