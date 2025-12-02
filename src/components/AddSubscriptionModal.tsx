@@ -17,6 +17,8 @@ interface FormData {
     amount: number;
     paymentDay: number;
     category: 'subscription' | 'fixed';
+    isFreeTrial: boolean;
+    trialEndDate: string;
 }
 
 export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
@@ -25,14 +27,20 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
     onSave,
     editingSubscription
 }) => {
-    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<FormData>({
         defaultValues: {
             itemName: '',
             amount: 0,
             paymentDay: new Date().getDate(), // Default to today
-            category: 'subscription'
+            category: 'subscription',
+            isFreeTrial: false,
+            trialEndDate: ''
         }
     });
+
+    const isFreeTrial = watch('isFreeTrial');
+
+
 
     useEffect(() => {
         if (editingSubscription) {
@@ -40,12 +48,16 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
             setValue('amount', editingSubscription.amount);
             setValue('paymentDay', editingSubscription.paymentDay || new Date().getDate());
             setValue('category', editingSubscription.category || 'subscription');
+            setValue('isFreeTrial', editingSubscription.isFreeTrial || false);
+            setValue('trialEndDate', editingSubscription.trialEndDate || '');
         } else {
             reset({
                 itemName: '',
                 amount: undefined,
                 paymentDay: new Date().getDate(),
-                category: 'subscription'
+                category: 'subscription',
+                isFreeTrial: false,
+                trialEndDate: ''
             });
         }
     }, [editingSubscription, setValue, reset, isOpen]);
@@ -166,6 +178,46 @@ export const AddSubscriptionModal: React.FC<AddSubscriptionModalProps> = ({
                                         </div>
                                         {errors.paymentDay && <p className="text-danger text-xs mt-1">{errors.paymentDay.message}</p>}
                                     </div>
+                                </div>
+
+                                <div className="bg-surfaceHighlight/50 p-4 rounded-xl border border-border space-y-4">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                {...register('isFreeTrial')}
+                                                className="peer sr-only"
+                                            />
+                                            <div className="w-10 h-6 bg-surface border border-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-textSecondary after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent peer-checked:after:bg-white"></div>
+                                        </div>
+                                        <span className="text-sm font-medium text-textSecondary group-hover:text-white transition-colors">
+                                            Is this a Free Trial?
+                                        </span>
+                                    </label>
+
+                                    <AnimatePresence>
+                                        {isFreeTrial && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="pt-2">
+                                                    <label className="block text-sm font-medium text-warning mb-1">Trial End Date</label>
+                                                    <input
+                                                        type="date"
+                                                        {...register('trialEndDate', { required: isFreeTrial ? 'Trial end date is required' : false })}
+                                                        className={cn(
+                                                            "w-full bg-surface border border-border rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-warning transition-all",
+                                                            errors.trialEndDate && "border-danger focus:ring-danger-50"
+                                                        )}
+                                                    />
+                                                    {errors.trialEndDate && <p className="text-danger text-xs mt-1">{errors.trialEndDate.message}</p>}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
 
                                 <button

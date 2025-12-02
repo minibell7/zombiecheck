@@ -22,20 +22,32 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
 
-  // Migration: Ensure all subscriptions have a paymentDay
+  // Migration: Ensure all subscriptions have new fields
   useEffect(() => {
-    const migrated = subscriptions.map(sub => ({
-      ...sub,
-      paymentDay: sub.paymentDay || 1
-    }));
-    // Only update if changes are needed to avoid infinite loop
-    if (JSON.stringify(migrated) !== JSON.stringify(subscriptions)) {
+    let hasChanges = false;
+    const migrated = subscriptions.map(sub => {
+      const updates: Partial<Subscription> = {};
+      if (!sub.paymentDay) updates.paymentDay = 1;
+      if (sub.isFreeTrial === undefined) updates.isFreeTrial = false;
+      if (sub.trialEndDate === undefined) updates.trialEndDate = '';
+      if (sub.status === undefined) updates.status = 'active';
+
+      if (Object.keys(updates).length > 0) {
+        hasChanges = true;
+        return { ...sub, ...updates };
+      }
+      return sub;
+    });
+
+    if (hasChanges) {
       setSubscriptions(migrated);
     }
   }, [subscriptions, setSubscriptions]);
 
   const totalMonthlyCost = useMemo(() => {
-    return subscriptions.reduce((total, sub) => total + Number(sub.amount), 0);
+    return subscriptions
+      .filter(sub => sub.status !== 'to_cancel')
+      .reduce((total, sub) => total + Number(sub.amount), 0);
   }, [subscriptions]);
 
   const handleAddSubscription = (data: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt'>) => {
@@ -54,6 +66,7 @@ function App() {
       const newSubscription: Subscription = {
         id: uuidv4(),
         ...data,
+        status: 'active',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -72,6 +85,12 @@ function App() {
     }
   };
 
+  const handleStatusChange = (id: string, status: 'active' | 'to_cancel') => {
+    setSubscriptions(prev => prev.map(sub =>
+      sub.id === id ? { ...sub, status } : sub
+    ));
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingSubscription(null);
@@ -82,11 +101,18 @@ function App() {
     setActiveTab('items');
   };
 
+  const handleTabChange = (tab: 'dashboard' | 'calendar' | 'items') => {
+    if (tab === 'items') {
+      setItemsFilter('all'); // Always reset filter when clicking "All Items"
+    }
+    setActiveTab(tab);
+  };
+
   return (
     <Layout>
       <Navigation
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         onAddClick={() => setIsModalOpen(true)}
         onSettingsClick={() => setIsSettingsOpen(true)}
       />
@@ -97,6 +123,9 @@ function App() {
             subscriptions={subscriptions}
             totalMonthlyCost={totalMonthlyCost}
             onNavigate={handleDashboardNavigation}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onStatusChange={handleStatusChange}
           />
         )}
 
@@ -113,7 +142,9 @@ function App() {
             subscriptions={subscriptions}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onStatusChange={handleStatusChange}
             filter={itemsFilter}
+            onClearFilter={() => setItemsFilter('all')}
           />
         )}
       </div>

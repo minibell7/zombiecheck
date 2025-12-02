@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import type { Subscription } from '../types';
 import { SubscriptionCard } from '../components/SubscriptionCard';
-import { Search } from 'lucide-react';
+import { Search, X, Filter } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 
 interface AllItemsViewProps {
     subscriptions: Subscription[];
     onEdit: (subscription: Subscription) => void;
     onDelete: (id: string) => void;
+    onStatusChange?: (id: string, status: 'active' | 'to_cancel') => void;
     filter?: 'all' | 'today' | 'week';
+    onClearFilter?: () => void;
 }
 
-export const AllItemsView: React.FC<AllItemsViewProps> = ({ subscriptions, onEdit, onDelete, filter = 'all' }) => {
+export const AllItemsView: React.FC<AllItemsViewProps> = ({
+    subscriptions,
+    onEdit,
+    onDelete,
+    onStatusChange,
+    filter = 'all',
+    onClearFilter
+}) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredSubscriptions = subscriptions.filter(sub => {
@@ -43,12 +52,21 @@ export const AllItemsView: React.FC<AllItemsViewProps> = ({ subscriptions, onEdi
     return (
         <div className="pb-24 px-6 pt-6">
             <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h2 className="text-2xl font-bold text-white">
-                        {filter === 'today' ? "Today's Items" : filter === 'week' ? "This Week's Items" : "All Items"}
-                    </h2>
+                <div className="flex items-center gap-3">
+                    <h2 className="text-2xl font-bold text-white">All Items</h2>
                     {filter !== 'all' && (
-                        <p className="text-sm text-textSecondary mt-1">Filtered by {filter}</p>
+                        <div className="flex items-center gap-1 bg-accent/20 text-accent px-3 py-1 rounded-full text-sm font-medium border border-accent/20 animate-in fade-in slide-in-from-left-4">
+                            <Filter size={14} />
+                            <span className="capitalize">{filter}</span>
+                            {onClearFilter && (
+                                <button
+                                    onClick={onClearFilter}
+                                    className="ml-1 p-0.5 hover:bg-accent/20 rounded-full transition-colors"
+                                >
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
                     )}
                 </div>
                 <span className="text-xs text-textSecondary bg-surfaceHighlight px-2 py-1 rounded-full">
@@ -80,6 +98,7 @@ export const AllItemsView: React.FC<AllItemsViewProps> = ({ subscriptions, onEdi
                                 subscription={sub}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
+                                onStatusChange={onStatusChange}
                             />
                         ))
                     )}

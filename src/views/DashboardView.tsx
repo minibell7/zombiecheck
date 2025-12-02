@@ -1,19 +1,40 @@
 import React, { useState } from 'react';
 import { Dashboard } from '../components/Dashboard';
+import { SubscriptionCard } from '../components/SubscriptionCard';
 import type { Subscription } from '../types';
-import { ChevronDown, ChevronUp, Lightbulb, Share2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Lightbulb, Share2, AlertTriangle, Skull } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { differenceInDays, parseISO } from 'date-fns';
 
 interface DashboardViewProps {
     subscriptions: Subscription[];
     totalMonthlyCost: number;
     onNavigate: (filter: 'all' | 'today' | 'week') => void;
+    onEdit: (subscription: Subscription) => void;
+    onDelete: (id: string) => void;
+    onStatusChange: (id: string, status: 'active' | 'to_cancel') => void;
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, totalMonthlyCost, onNavigate }) => {
+export const DashboardView: React.FC<DashboardViewProps> = ({
+    subscriptions,
+    totalMonthlyCost,
+    onNavigate,
+    onEdit,
+    onDelete,
+    onStatusChange
+}) => {
     const [isTipsOpen, setIsTipsOpen] = useState(false);
 
-    const todayCost = subscriptions.reduce((total, sub) => {
+    const activeSubscriptions = subscriptions.filter(sub => sub.status !== 'to_cancel');
+    const killListSubscriptions = subscriptions.filter(sub => sub.status === 'to_cancel');
+
+    const trialEndingSoon = activeSubscriptions.filter(sub => {
+        if (!sub.isFreeTrial || !sub.trialEndDate) return false;
+        const daysLeft = differenceInDays(parseISO(sub.trialEndDate), new Date());
+        return daysLeft >= 0 && daysLeft <= 3;
+    });
+
+    const todayCost = activeSubscriptions.reduce((total, sub) => {
         const today = new Date();
         if (sub.paymentDay === today.getDate()) {
             return total + Number(sub.amount);
@@ -21,20 +42,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
         return total;
     }, 0);
 
-    const weekCost = subscriptions.reduce((total, sub) => {
+    const weekCost = activeSubscriptions.reduce((total, sub) => {
         const today = new Date();
-        // Check next 7 days from Monday (or just check if paymentDay is in this week's dates)
-        // Simpler: iterate through the 7 days of this week
         let isInWeek = false;
         for (let i = 0; i < 7; i++) {
             const weekDate = new Date(today);
-            weekDate.setDate(today.getDate() - today.getDay() + i); // Sunday to Saturday
+            weekDate.setDate(today.getDate() - today.getDay() + i);
             if (sub.paymentDay === weekDate.getDate()) {
                 isInWeek = true;
                 break;
             }
         }
-
         if (isInWeek) {
             return total + Number(sub.amount);
         }
@@ -78,6 +96,48 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ subscriptions, tot
             </div>
 
             <Dashboard totalMonthlyCost={totalMonthlyCost} onClick={() => onNavigate('all')} />
+
+            {/* Trial Alerts */}
+            {trialEndingSoon.length > 0 && (
+                <div className="px-6 mb-6">
+                    <div className="flex items-center gap-2 mb-3 text-warning">
+                        <AlertTriangle size={18} />
+                        <h2 className="font-bold text-sm uppercase tracking-wider">Free Trials Ending Soon</h2>
+                    </div>
+                    <div className="grid gap-3">
+                        {trialEndingSoon.map(sub => (
+                            <SubscriptionCard
+                                key={sub.id}
+                                subscription={sub}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onStatusChange={onStatusChange}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Kill List */}
+            {killListSubscriptions.length > 0 && (
+                <div className="px-6 mb-6">
+                    <div className="flex items-center gap-2 mb-3 text-kill">
+                        <Skull size={18} />
+                        <h2 className="font-bold text-sm uppercase tracking-wider">The Kill List</h2>
+                    </div>
+                    <div className="grid gap-3">
+                        {killListSubscriptions.map(sub => (
+                            <SubscriptionCard
+                                key={sub.id}
+                                subscription={sub}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onStatusChange={onStatusChange}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="px-6 grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 max-w-7xl mx-auto">
                 <div

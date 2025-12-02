@@ -7,14 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#121212',
-        surface: '#1E1E1E',
-        surfaceHighlight: '#2A2A2A',
-        accent: '#00C4B4',
-        accentHover: '#00A396',
-        textPrimary: '#FFFFFF',
-        textSecondary: '#B0B0B0',
-        border: '#333333',
+        background: '#09090B', // Deep black
+        surface: '#18181B', // Zinc 900
+        surfaceHighlight: '#27272A', // Zinc 800
+        accent: '#2DD4BF', // Teal 400 (Mint)
+        accentHover: '#14B8A6', // Teal 500
+        kill: '#F43F5E', // Rose 500
+        killHover: '#E11D48', // Rose 600
+        warning: '#F59E0B', // Amber 500
+        textPrimary: '#FAFAFA', // Zinc 50
+        textSecondary: '#A1A1AA', // Zinc 400
+        border: '#3F3F46', // Zinc 700
         white: {
           5: 'rgba(255, 255, 255, 0.05)',
           10: 'rgba(255, 255, 255, 0.1)',

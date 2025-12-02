@@ -4,6 +4,9 @@ export interface Subscription {
     amount: number;
     paymentDay: number; // 1-31
     category: 'subscription' | 'fixed';
+    isFreeTrial?: boolean;
+    trialEndDate?: string; // ISO string
+    status?: 'active' | 'to_cancel';
     createdAt: string; // ISO string
     updatedAt: string; // ISO string
 }
